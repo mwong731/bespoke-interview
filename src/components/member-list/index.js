@@ -1,111 +1,80 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import styled from 'styled-components';
-
-const getData = async setMembers => {
-  try {
-    const res = await axios.get('http://localhost:4444/members');
-    setMembers(res.data);
-  } catch(err)  {
-    console.log('ERROR', err);
-  }
-};
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  width: 100%;
-  padding: 0 5rem;
-`;
-
-const Filters = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  margin: 1rem 0;
-  > input {
-    max-width: 10rem;
-  }
-`;
-
-export const Input = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-`;
-
-const Table = styled.table`
-  width: calc(100% - 10rem);
-  padding: 0 5rem;
-  max-width: 100%;
-  background: #fff;
-  border-radius: 5px;
-  border-collapse: collapse;
-  box-shadow: 0px 1px 5px 2px #d3d1d1;
-`;
-
-export const Thead = styled.thead`
-  background: lightgrey;
-`;
-
-const TH = styled.th`
-  padding: 0.5rem;
-  text-align: center;
-`;
-
-const Cell = styled.td`
-  padding: 0.5rem;
-  text-align: center;
-`;
-
-export const SearchBar = () => (
-  <Input
-    type="text"
-    placeholder="Search for a member"
-  />
-);
-
-export const Row = ({ id, age, name, activities, rating }) => (
-  <tr key={id}>
-    <Cell>{name}</Cell>
-    <Cell>{age}</Cell>
-    <Cell>{rating}</Cell>
-    <Cell>
-      {activities.map((activity, i) => (
-        <div key={i}>{activity}</div>
-      ))}
-    </Cell>
-  </tr>
-);
+import { Link } from "react-router-dom";
+import { Block, Button, Filters, Title } from "../styles/member.styled";
+import SearchBar from "./searchBar";
+import List from './list';
+import Filter from './filter'
 
 const MemberList = () => {
-  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true)
+  const [result, setResult] = useState([])
+  const [members, setMembers] = useState([])
+  const [activities, setActivities] = useState([])
+  
+
+  const getData = async (params) => {
+    setLoading(true)
+    let url = 'http://localhost:4444/members';
+    if(params){
+      url += '?';
+      for (const key in params){
+        url += `${key}=${params[key]}`
+      }
+    }
+    try {
+      const res = await axios.get(url);
+      setMembers(res.data);
+      setResult(res.data);
+
+      // set activity list
+      let activityMap = {}
+      res.data.forEach((member) => {
+        member.activities.forEach((activity)=>{
+          if(!(activity in activityMap)){
+            activityMap[activity] = true
+          }
+        })
+      })
+
+      setActivities(Object.keys(activityMap))
+
+      setLoading(false)
+    } catch(err)  {
+      console.log('ERROR', err);
+    }
+  }
 
   useEffect(() => {
-    getData(setMembers);
+    getData();
   }, []);
+
+  const handleNewSearch = (params) => {
+    getData(params);
+  }
+
+  const handleDelete = async (id) =>{
+    try {
+      const res = await axios.delete(`http://localhost:4444/members/${id}`);
+      getData()
+    } catch(err)  {
+      console.log('ERROR', err);
+    }
+  }
 
   return (
     <Block>
-      <h1>My Club's Members</h1>
+      <Title>
+        <h1>My Club's Members</h1>
+        <Link to={'/edit'}><Button><i className="fa-solid fa-plus"></i> Add Member</Button></Link>
+      </Title>
+      
       <Filters>
-        <SearchBar />
+        <SearchBar handleNewSearch={handleNewSearch}/>
+        <Filter activities={activities} result={result} setMembers={setMembers}/>
       </Filters>
-      <Table>
-        <Thead>
-          <tr>
-            <TH>Name</TH>
-            <TH>Age</TH>
-            <TH>Member Rating</TH>
-            <TH>Activities</TH>
-          </tr>
-        </Thead>
-        <tbody>
-          {members.map((member) => (
-            <Row {...member} key={member.id} />
-          ))}
-        </tbody>
-      </Table>
+
+      <List members={members} result={result} setMembers={setMembers} setResult={setResult} loading={loading} handleDelete={handleDelete}/>
     </Block>
   );
 };
