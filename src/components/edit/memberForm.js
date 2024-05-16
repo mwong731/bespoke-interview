@@ -26,7 +26,7 @@ const MemberForm = ({member}) => {
 
   const addActivity = (e) =>{
     e.preventDefault()
-    if(activityName == '') return
+    if(activityName === '') return
     setActivities([...activities, activityName])
     setActivityName('')
   }

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useLocation } from 'react-router-dom';
 import { Block, Title } from "../styles/member.styled";
-import MemberForm from "./memberForm";
+import MemberForm from "./MemberForm";
 
 const Edit = () => {
     const location = useLocation()

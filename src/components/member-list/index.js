@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { Link } from "react-router-dom";
 import { Block, Button, Filters, Title } from "../styles/member.styled";
-import SearchBar from "./searchBar";
-import List from './list';
-import Filter from './filter'
+import SearchBar from "./SearchBar";
+import List from './List';
+import Filter from './Filter'
 
 const MemberList = () => {
   const [loading, setLoading] = useState(true)

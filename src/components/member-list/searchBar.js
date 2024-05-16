@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {SearchInput, SearchForm, SearchButton} from "../styles/member.styled"
 
 const SearchBar = ({handleNewSearch}) => {

@@ -9,13 +9,21 @@ const Filter = ({activities, result, setMembers}) => {
   const ref = useRef(null);
 
   const handleClick = (filter, val) =>{
-    if(filter == 'rating'){
-      let newRatingFilter = ratingFilter.indexOf(val) > -1 ? [...ratingFilter].filter((el)=>el !== val) : [...ratingFilter, val] 
+    if(filter === 'rating'){
+      let newRatingFilter = 
+        ratingFilter.indexOf(val) > -1 ? //check if rating exists in chosen options
+        [...ratingFilter].filter((el)=>el !== val) : //if yes, remove option
+        [...ratingFilter, val] //else, add option
       setRatingFilter(newRatingFilter)
+      //filter out members that have ratings outside of chosen options
       setMembers( [...result].filter((member)=> newRatingFilter.indexOf(member.rating) > -1))
     }else{
-      let newActivityFilter = activitiesFilter.indexOf(val) > -1 ? [...activitiesFilter].filter((el)=>el !== val) : [...activitiesFilter, val]
+      let newActivityFilter = 
+        activitiesFilter.indexOf(val) > -1 ? 
+        [...activitiesFilter].filter((el)=>el !== val) : 
+        [...activitiesFilter, val]
       setActivitiesFilter(newActivityFilter)
+      //filter out members that have activities outside of chosen options
       setMembers( [...result].filter((member)=> newActivityFilter.some(act=> member.activities.includes(act))))
     }
   }

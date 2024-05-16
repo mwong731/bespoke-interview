@@ -33,17 +33,22 @@ export const SearchInput = styled.input`
 `;
 
 export const Table = styled.table`
-  min-width: 100%;
+  min-width: 600px;
   padding: 0 5rem;
   max-width: 100%;
   background: #fff;
   border-radius: 15px;
   border-collapse: collapse;
-  box-shadow: 0px 1px 5px 2px #d3d1d1;
   >tbody{
     position: relative
   }
 `;
+
+export const TableContainer = styled.div`
+  overflow-x: auto;
+  border-radius: 15px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+`
 
 export const Thead = styled.thead`
   background: lightgrey;
@@ -65,13 +70,14 @@ export const TR = styled.tr`
 export const Cell = styled.td`
   padding: 1rem;
   text-align: left;
+  line-break: anywhere
 `;
 
 export const IconButton = styled.span`
   padding: 0 5px;
   margin-right: 10px;
   cursor: pointer;
-  color: ${props => props.$isactive == 1 ? "#2E4562":"#818FA0"};
+  color: ${props => props.$isactive === true ? "#2E4562":"#818FA0"};
   &:last-child{
     margin-right: 0;
   }
